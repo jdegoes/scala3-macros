@@ -5,3 +5,4 @@ project/target
 .metals 
 .vscode
 project/project
+metals.sbt
