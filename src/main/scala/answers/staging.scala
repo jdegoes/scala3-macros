@@ -50,7 +50,7 @@ extension (poly: Polynomial)
     
     sum
 
-object Macro:
+object Macro
   // inline def calc(inline ops: List[Op]): Double => Double = ${calcMacro('ops)}
 
   // given FromExpr[Op] with

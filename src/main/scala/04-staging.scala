@@ -63,7 +63,7 @@ object exercise2
    * EXERCISE 2
    *
    * A while ago we saw how we could convert a value to an expression by wrapping it in `Expr(...)`
-   * if there's a contextual `ToExpr` type class instance available. The reverse operation is to be
+   * if there's a contextual `ToExpr` type-class instance available. The reverse operation is to be
    * able to call `.value` or `.valueOrAbort` on an existing `Expr[T]` instance and get an
    * `Option[T]` (or a `T`) while the macro is running. This requires a given `FromExpr[T]`
    * instance.

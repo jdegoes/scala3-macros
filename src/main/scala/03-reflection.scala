@@ -138,43 +138,79 @@ object exercise4:
 
 
 /**
-  * Type Representations
-  *
-  * A `TypeRepr` is a representation of a type we can inspect as a datatype, much like `Term` is a
-  * datatype we can inspect, representing terms. Here's the relationship between the four
-  * types representing types and terms and the quotes and reflection APIs
-  *              
-  *                | quotes API | reflect API
-  *    ------------+------------+-------------
-  *    term space  | Expr[T]    | Term
-  *    type space  | Type[T]    | TypeRepr
-  *
-  * The meaning of type parameters (or their absence) is important, particularly for the distinction
-  * between `Type[T]` and `TypeRepr`.
-  *
-  * - a `Type[T]` always corresponds to a type `T` that is in scope (but in the type namespace)
-  * - a `Type[T]` object is not useful (and doesn't make sense) without `T`
-  * - if we have a `Type[T]`, then we must have some `T` type we can use in type positions, even if
-  *   that type is abstract
-  * - a pattern match which binds a new type, say `t`, creates a new scope with both the type `t`
-  *   AND a contextual `Type[t]` instance; the type is abstract, but can still be composed in
-  *   types, etc
-  * - a `TypeRepr` has no type parameter, so there's no immediate way to use it in type position
-  * - but it is "just" a data structure
-  * - there is overview of the hierarchy of `TypeRepr`s in the Dotty source code:
-  *   `github.com:lampepfl/dotty/library/src/scala/quoted/Quotes.scala`
-  *
-  * To convert between them, use:
-  *  - `expr.asTerm`
-  *  - `term.asExpr` or `term.asExprOf[T]`
-  *  - `typeRepr.asType`
-  *  - `TypeRepr.of[T]` given a contextual `Type[T]` in scope
-  */
+ * Type Representations
+ *
+ * A `TypeRepr` is a representation of a type we can inspect as a datatype, much like `Term` is a
+ * datatype we can inspect, representing terms. Here's the relationship between the four
+ * types representing types and terms and the quotes and reflection APIs
+ *              
+ *                | quotes API | reflect API
+ *    ------------+------------+-------------
+ *    term space  | Expr[T]    | Term
+ *    type space  | Type[T]    | TypeRepr
+ *
+ * The meaning of type parameters (or their absence) is important, particularly for the distinction
+ * between `Type[T]` and `TypeRepr`.
+ *
+ * - a `Type[T]` always corresponds to a type `T` that is in scope (but in the type namespace)
+ * - a `Type[T]` object is not useful (and doesn't make sense) without `T`
+ * - if we have a `Type[T]`, then we must have some `T` type we can use in type positions, even if
+ *   that type is abstract
+ * - a pattern match which binds a new type, say `t`, creates a new scope with both the type `t`
+ *   AND a contextual `Type[t]` instance; the type is abstract, but can still be composed in
+ *   types, etc
+ * - a `TypeRepr` has no type parameter, so there's no immediate way to use it in type position
+ * - but it is "just" a data structure
+ * - there is overview of the hierarchy of `TypeRepr`s in the Dotty source code:
+ *   `github.com:lampepfl/dotty/library/src/scala/quoted/Quotes.scala`
+ *
+ * To convert between them, use:
+ *  - `expr.asTerm`
+ *  - `term.asExpr` or `term.asExprOf[T]`
+ *  - `typeRepr.asType`
+ *  - `TypeRepr.of[T]` given a contextual `Type[T]` in scope
+ */
 
-object exercise4b: // FIXME: Renumber
-  inline def typeReflect[T]: Unit = ${typeReflectMacro[T]}
-  def typeReflectMacro[T: Type](using Quotes): Expr[Unit] = ???
+object exercise5:
+  /**
+   * EXERCISE 5
+   * 
+   * Let's define a macro called `typeReflect`. It will just take one type parameter. In the body
+   * of the macro below, get the `TypeRepr` instance for `T` and print it. Then, in
+   * `playground.scala`, call `typeReflect` a couple of times with a selection of interesting types
+   * of your choice. Compare the output from `toString` and `show` on the `TypeRepr` instance.
+   *
+   * Take a look at the AST type node types in
+   *   `github.com:lampepfl/dotty/library/src/scala/quoted/Quotes.scala`
+   *
+   * and try to get the macro to display some of these different type nodes by calling `typeReflect`
+   * with different types.
+   *
+   * Now use tab-completion in Metals to see the members of `TypeRepr`. Ignore the methods which
+   * use `Symbol`s for now (we will experiment with these in the next exercise), and experiment with
+   * some of the other methods. In particular, try the following:
+   *
+   * - check whether a type is a type of function with `isFunctionType`
+   * - check for equality with the `TypeRepr` of a concrete type using `=:=`
+   * - check a subtype relationship with another `TypeRepr` with `<:<`
+   * - get a list of type parameters with `typeArgs`
+   * - widening a singleton type with `widen`
+   * - resolving a type alias with `de-alias`
+   *
+   * Now, make a change to the definitions of `typeReflect` and `typeReflectMacro`: an a type bound
+   * of `<: AnyKind` to the type parameter, `T`. This will allow us to call `typeReflect` with
+   * higher-kinded types, like `Either` or `[T] =>> Map[T, T]`.
+   *
+   * Now, we can try one more experiment:
+   * - pass in a type constructor to `typeReflect` and in the macro apply a concrete type to it
+   *
+   */
+  inline def typeReflect[T] = ${typeReflectMacro[T]}
   
+  def typeReflectMacro[T: Type](using Quotes): Expr[Unit] =
+    import quotes.reflect.*
+    '{()}
+
 /**
  * The types and terms we encounter in an AST are generally references to types and terms defined
  * elsewhere in the source or in dependent libraries. The entities themselves are described by
@@ -182,9 +218,9 @@ object exercise4b: // FIXME: Renumber
  * entities.
  */
 
-object exercise5:
+object exercise6:
   /**
-   * EXERCISE 5 (45 minutes)
+   * EXERCISE 6 (45 minutes)
    *
    * Let's explore symbols. Symbols contain a huge amount of information on a variety of different
    * entities that exist at compile-time, and the best way to understand them is to explore them.
@@ -219,9 +255,9 @@ object exercise5:
     println(typeSymbol.companionClass)
     '{()}
 
-object exercise6:
+object exercise7:
   /**
-   * EXERCISE 6 (20 minutes)
+   * EXERCISE 7 (20 minutes)
    * 
    * Let's write a simple macro which takes a single type parameter, and returns the companion
    * object for that type. Below is the stub for macro, `companion`.
@@ -239,9 +275,9 @@ object exercise6:
   transparent inline def companion[T]: Any = ???
 
 
-object exercise7:
+object exercise8:
   /**
-   * EXERCISE 7 (1 hour)
+   * EXERCISE 8 (1 hour)
    *
    * Scala 3 introduces a new feature which provides us with record types. Scala will allow us to
    * define structural types with typed fields. Unlike `Dynamic`, Scala will only allow us to access
@@ -257,7 +293,7 @@ object exercise7:
    * 2. Create a new instance of the `Rec` case class containing a `Map` with keys `"name"` and
    *    `"age"`, mapped to appropriate values.
    * 3. Use `asInstanceOf` to cast the `Rec` instance to `Person`.
-   * 4. Try to access `alpha` and `beta` on the instance of `Person`.
+   * 4. Try to access `name` and `age` on the instance of `Person`.
    * 
    * Now, see if you can break it. What happens if you try to access a field called `birthday`?
    * What happens if the map does not contain one of the fields? What if the map contains the field
@@ -270,7 +306,7 @@ object exercise7:
     def selectDynamic(name: String): Any = map(name)
 
   /**
-   * EXERCISE 7b
+   * EXERCISE 8b
    *
    * Remember that a `transparent` method can return a value of a more precise type than its
    * declared return type? We can use this to construct new record types at compile-time which
@@ -283,26 +319,31 @@ object exercise7:
    * ```
    * 
    * Below is an implementation of a method to read such a schema. Write a macro which takes a
-   * filename String as a parameter and returns a `Map[String, String]` containing the schema.
+   * filename String as a parameter and returns a `Map[String, String]` containing the schema,
+   * using the `readSchema` method already provided.
+   *
+   * This macro will allow us to write a literal filename in source code, and have the compiler
+   * turn it into a `Map[String, String]`, all at compile-time. (As long as it can read the file!)
    */
 
   def readSchema(schema: List[String], map: Map[String, String] = Map()): Map[String, String] =
     schema match
       case s"$key: $typ" :: tail => readSchema(tail, map.updated(key, typ))
-      case _ :: tail            => readSchema(tail, map)
-      case Nil                  => map
+      case _ :: tail             => readSchema(tail, map)
+      case Nil                   => map
   
   val schema = readSchema(scala.io.Source.fromFile("schema.txt").getLines.to(List))
 
-  inline def readSchema(filename: String): Map[String, String] = ???
+  inline def readSchemaFile(filename: String): Map[String, String] = ???
 
   /**
-   * EXERCISE 7c
+   * EXERCISE 8c
    *
    * We can define a `Schema` class as a factory for creating new record types. Update the macro
    * from Exercise 6b to construct a new Schema instance. But what should its type parameter be?
    * It should be the subtype of `Rec` representing the schema, but for now, just leave it as `Rec`,
-   * though, of course, this means we are not using our schema!
+   * though, of course, this means that we are not yet using any of the information that we have
+   * just read from our schema -- that will be the next step!
    */
   
   abstract class Schema[RecType <: Rec](schema: Map[String, String]):
@@ -311,14 +352,14 @@ object exercise7:
   inline def makeSchema(filename: String): Schema[Rec] = ???
 
   /**
-   * EXERCISE 7d
+   * EXERCISE 8d
    *
    * In order to specify the `RecType` when we construct our `Schema`, we need to programmatically
    * construct the AST of the refined type.
    *
-   * To do this, update the `makeSchema` macro to include a tail recursive function which iterates over
-   * each key in the `schema` map, progressively adding refinements to the previous type. The base
-   * case will be the `TypeRepr` of `Rec`. Here's the signature of the recursive method to get
+   * To do this, update the `makeSchema` macro to include a tail recursive function which iterates
+   * over each key in the `schema` map, progressively adding refinements to the previous type. The
+   * base case will be the `TypeRepr` of `Rec`. Here's the signature of the recursive method to get
    * you started:
    *
    * def mkType(keyTypes: List[(String, String)], tpe: TypeRepr): TypeRepr
@@ -340,7 +381,7 @@ object exercise7:
    */
   
   /**
-   * EXERCISE 7e
+   * EXERCISE 8e
    *
    * If everything worked, you should be able to call `makeSchema` on a filename and get a new
    * `Schema[RecType]` instance that can construct new instances from a key/value map.
@@ -354,10 +395,59 @@ object exercise7:
    *    does not contain all the keys.
    */
 
-
-object exercise8:
   /**
-   * EXERCISE 8 (1 hour)
+   * EXERCISE 8f
+   *
+   * Try adding a new field to the Schema file, with a new type, such as `Char`. In order to support
+   * `Char` instances, we would need to modify the pattern match in our macro to also match on the
+   * string `"Char"`.
+   *
+   * But a user of our library would not always be able to make modifications to the library itself.
+   * So, it's not as extensible as we would like. Let's use contextual values (implicits) as a
+   * replacement for the hardcoded pattern match in the macro. We will start by creating a
+   * contextual type, `SchemaType`, which maps strings to the types they represent.
+   * ```
+   * trait SchemaType[S <: String & Singleton, T]
+   * given SchemaType["String", String]
+   * given SchemaType["Int", Int]
+   * ```
+   *
+   * We will change the macro to search for a `SchemaType` instance whose first parameter is the
+   * type string from the schema file, and will interpret that to mean the type in the second
+   * parameter.
+   *
+   * We can't use `summon[SchemaType[str, ?]]` in the macro because we don't have the string
+   * available as a singleton type when the macro is expanding. We only have it as a runtime value.
+   * So we must use `Expr.summon` instead, on a type which we will construct.
+   *
+   * We want to write `Expr.summon[SchemaType[str, ?]]`, but we still need `str` as a type in scope!
+   * One typical way to introduce a `str` type into scope is to pattern match on a `Type[?]`, and
+   * we can get a `Type[?]` from a `TypeRepr` using `.asType`, and we can construct a new `TypeRepr`
+   * representing a singleton literal `String` type from just a runtime string.
+   * 
+   * So, in the macro,
+   *   1. create a new `ConstantType` of the type name (which is a `TypeRepr`
+   *   2. convert it to a `Type[?]`
+   *   3. pattern match on it using `'[...]`
+   *   4. use `Expr.summon` to do an implicit search for a `SchemaType` with the appropriate
+   *      parameters. Note that if the compiler says that it can't prove that type A conforms to
+   *      type B, but we know that it does, then we can write `A & B` in place of `A`. If it really
+   *      is true that `A <: B`, then `A & B` and `A` are _identical_ types anyway.
+   *   5. pattern match on the result of `Expr.summon`, and handle the failure case with an error
+   *   6. pattern match the successful result of Expr.summon with,
+   *      ```
+   *      case Some('{ ${_}: schemaType }) => Type.of[schemaType] match
+   *        case '[SchemaType[?, fieldType]] =>
+   *      ```
+   *   7. get the `TypeRepr` of the type `fieldType` and use it in the `Refinement`, as before.
+   *
+   * You can now experiment with adding new types in the schema, the data map, and new `SchemaType`
+   * instances to make everything compile.
+   */
+
+object exercise9:
+  /**
+   * EXERCISE 9 (1 hour)
    *
    * We often want to work with quantities which have units - metres, joules, or metres per second
    * per second, for example, and perform arithmetic operations on them.

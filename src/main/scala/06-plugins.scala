@@ -108,5 +108,4 @@ import plugins.*
  * Now try modifying `runsBefore` and `runsAfter` to have the phase run at a different time. How
  * have the values changed?
  */
-
- type Dummy = Unit
+type Dummy = Unit

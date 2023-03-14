@@ -106,7 +106,7 @@ object exercise4:
    * value generated at compile-time.
    *
    * But that Double value exists only as 64 bits of data in memory in the JVM at *compiletime*,
-   * whereas we need to substitue *code representing that value* into the quotes. Specifically, the
+   * whereas we need to substitute *code representing that value* into the quotes. Specifically, the
    * compiler needs an `Expr[Double]`. Thankfully that's easy to create by wrapping the `Double`
    * with `Expr(...)`. Apply this, and try again.
    *
@@ -182,7 +182,7 @@ object exercise6:
  *  at T+2.
  *
  *  Here, "compilation" means the final production of runnable bytecode. One of the most elegant
- *  features of Scala 3 Macros is code inside quotes will still be fully typechecked inside quotes
+ *  features of Scala 3 Macros is code inside quotes will still be fully type-checked inside quotes
  *  in whichever phase it is defined in.
  *
  *
@@ -483,7 +483,7 @@ object exercise15:
    * Next, compare the cases for `List` and `Set`. `Set` simply returns the same value, unaltered.
    * But the `List` case uses the `Expr.summon` method to produce code which provides an
    * `Ordering[t]` when the macro expands: an `Expr[Ordering[t]]`. Look at the quoted block at the
-   * end, and check that everything typechecks, and as phase-consistent.
+   * end, and check that everything type-checks, and as phase-consistent.
    *
    * To make "typechecking in your head" easier, you can do the following:
    *  1. Pretend every `Expr[T]` is just a `T`

@@ -12,6 +12,7 @@ package inlineMethods
  * 
  * In this section, you will learn about the `inline` keyword and the guarantees it provides.
  */
+
 object exercise1:
   /**
    * EXERCISE 1 (10 mins)
@@ -114,7 +115,7 @@ object exercise4c:
  *
  * An `inline` method can additionally be marked as `transparent`, i.e. `transparent inline def`.
  * These methods will be "interpreted" at compile time, where possible, and the return type of the
- * transparent method may be refined, if it can be proven to have a more a more specialised type
+ * transparent method may be refined, if it can be proven to have a more a more specialized type
  * after inlining.
  *
  * They are called "transparent" because the compiler can "see inside" the implementation at the
@@ -289,7 +290,7 @@ object exercise8b:
    * compile-time) as a `String`.
    *
    * Uncomment `val n` and see what the error is. Note that we see `1.5d` instead of `1.5`. The
-   * captured code is a reserialization of the AST; not the code itself. */
+   * captured code is a re-serialization of the AST; not the code itself. */
   import scala.compiletime.{error, codeOf}
 
   inline def unitInterval(value: Double): Double =
@@ -412,7 +413,7 @@ object exercise10b:
   /**
    * EXERCISE 10b
    *
-   * Look at the typeclasses `Debug` and the instances which exist for `Int` and `Char`. Compare it
+   * Look at the type classes `Debug` and the instances which exist for `Int` and `Char`. Compare it
    * to `Show`, above.
    * 
    * Uncomment the implementation of `log` and fix the compile error by adding a `using` parameter
@@ -462,8 +463,8 @@ object exercise10d:
    * EXERCISE 10d
    *
    * There is a generalized version of `summonInline` called `summonFrom` which allows us to choose
-   * a preference of different typeclass instances, based on availability -- with a fallback option
-   * if no typeclass is available.
+   * a preference of different type class instances, based on availability -- with a fallback option
+   * if no type class is available.
    *
    * Look at the implementation of `log`, below. The code which looks like a partial function inside
    * `summonFrom` is interpreted by a macro (and like `summonInline`, it must be called in an inline
@@ -472,7 +473,7 @@ object exercise10d:
    *
    * Try running the `main` method, and see how each line of output is produced.
    *
-   * Now, add an additional `case` to the `log` to use a `Show[T]` typeclass, if one is available.
+   * Now, add an additional `case` to the `log` to use a `Show[T]` type class, if one is available.
    * Which line of `main` output changes, and why?
    */
   import exercise10a.Show
@@ -499,7 +500,7 @@ object exercise10e:
    *
    * `summonFrom` can find `Debug[T]` and `Show[T]` instances, but it doesn't make the contextual on
    * the RHS of each case, by default. However, Scala has new syntax to achieve this. Try replacing
-   * the bound name of the typeclass instance, `show: Show[T]` with `given Show[T]` (with no name
+   * the bound name of the type class instance, `show: Show[T]` with `given Show[T]` (with no name
    * binding). Do the same for `Debug[T]`. Does it compile?
    */
   import exercise10a.Show
