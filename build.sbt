@@ -12,7 +12,7 @@ lazy val root = project
       //"-Yexplicit-nulls",
       "-source", "future"
     ),
-    libraryDependencies += "org.scala-lang" %% "scala3-compiler" % "3.3.0-RC3",
-    libraryDependencies += "org.scala-lang" %% "scala3-staging" % "3.3.0-RC3",
-    scalaVersion := "3.3.0-RC3"
+    libraryDependencies += "org.scala-lang" %% "scala3-compiler" % "3.3.1",
+    libraryDependencies += "org.scala-lang" %% "scala3-staging" % "3.3.1",
+    scalaVersion := "3.3.1"
   )
