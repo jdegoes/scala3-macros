@@ -9,7 +9,9 @@ object welcome
   //
   // Daily Schedule:
   //
-  //    START  :  9:00   AM London Time
-  //    BREAK  : 12:00 Noon London Time
-  //    RESUME :  1:00   PM London Time
-  //    END    :  4:00   PM London Time
+  //    START  : 10:00 AM   Eastern Time
+  //    BREAK  : 11:45 AM   Eastern Time
+  //    RESUME : 12:15 Noon Eastern Time
+  //    END    :  2:00 PM   Eastern Time
+  //
+  // NOTE: Different schedule on Tuesday TBA!
